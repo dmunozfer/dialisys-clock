@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, orientation=portrait"
+    />
+    <title>Dialysis Clock - OpenCareClock v2</title>
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="apple-mobile-web-app-title" content="Dialysis Clock" />
+    <meta name="application-name" content="Dialysis Clock" />
+  </head>
+  <body>
+    <div id="app" class="app">
+      <!-- Pantalla principal -->
+      <div id="main-screen" class="main-screen">
+        <div class="message-container">
+          <h1 id="main-message" class="main-message">HOY DESCANSO</h1>
+          <p id="sub-message" class="sub-message">No hay diálisis hoy.</p>
+          <div id="time-display" class="time-display"></div>
+        </div>
+
+        <!-- Zona de acceso a configuración (invisible) -->
+        <div id="config-trigger" class="config-trigger"></div>
+      </div>
+
+      <!-- Pantalla de configuración (oculta por defecto) -->
+      <div id="config-screen" class="config-screen hidden">
+        <div class="config-container">
+          <h2>Configuración</h2>
+
+          <div class="config-section">
+            <h3>Días de diálisis</h3>
+            <div class="days-selector">
+              <label
+                ><input type="checkbox" id="day-monday" value="1" />
+                Lunes</label
+              >
+              <label
+                ><input type="checkbox" id="day-tuesday" value="2" checked />
+                Martes</label
+              >
+              <label
+                ><input type="checkbox" id="day-wednesday" value="3" />
+                Miércoles</label
+              >
+              <label
+                ><input type="checkbox" id="day-thursday" value="4" checked />
+                Jueves</label
+              >
+              <label
+                ><input type="checkbox" id="day-friday" value="5" />
+                Viernes</label
+              >
+              <label
+                ><input type="checkbox" id="day-saturday" value="6" checked />
+                Sábado</label
+              >
+              <label
+                ><input type="checkbox" id="day-sunday" value="0" />
+                Domingo</label
+              >
+            </div>
+          </div>
+
+          <div class="config-section">
+            <h3>Horarios de diálisis</h3>
+            <label
+              >Hora de ambulancia:
+              <input type="time" id="ambulance-time" value="06:30"
+            /></label>
+            <label
+              >Hora de fin de diálisis:
+              <input type="time" id="dialysis-end-time" value="12:00"
+            /></label>
+          </div>
+
+          <div class="config-section">
+            <h3>Horario modo noche</h3>
+            <label
+              >Inicio: <input type="time" id="night-start" value="22:00"
+            /></label>
+            <label
+              >Fin: <input type="time" id="night-end" value="06:00"
+            /></label>
+          </div>
+
+          <div class="config-section">
+            <h3>Colores</h3>
+            <div class="color-config">
+              <label
+                >Hoy diálisis:
+                <input type="color" id="color-today" value="#4CAF50"
+              /></label>
+              <label
+                >Diálisis completada:
+                <input type="color" id="color-completed" value="#2E7D32"
+              /></label>
+              <label
+                >Mañana diálisis:
+                <input type="color" id="color-tomorrow" value="#FF9800"
+              /></label>
+              <label
+                >Descanso: <input type="color" id="color-rest" value="#2196F3"
+              /></label>
+              <label
+                >Modo noche:
+                <input type="color" id="color-night" value="#673AB7"
+              /></label>
+            </div>
+          </div>
+
+          <div class="config-section">
+            <h3>Mensajes personalizables</h3>
+            <div class="message-config">
+              <label
+                >Mensaje hoy diálisis:
+                <input
+                  type="text"
+                  id="message-today"
+                  value="HOY HAY DIÁLISIS"
+                  maxlength="50"
+              /></label>
+              <label
+                >Submensaje hoy diálisis:
+                <input
+                  type="text"
+                  id="submessage-today"
+                  value="La ambulancia viene a las {hora}."
+                  maxlength="100"
+              /></label>
+              <label
+                >Mensaje diálisis completada:
+                <input
+                  type="text"
+                  id="message-completed"
+                  value="YA FUE A DIÁLISIS"
+                  maxlength="50"
+              /></label>
+              <label
+                >Submensaje diálisis completada:
+                <input
+                  type="text"
+                  id="submessage-completed"
+                  value="Descansa, ya pasó."
+                  maxlength="100"
+              /></label>
+              <label
+                >Mensaje mañana diálisis:
+                <input
+                  type="text"
+                  id="message-tomorrow"
+                  value="MAÑANA HAY DIÁLISIS"
+                  maxlength="50"
+              /></label>
+              <label
+                >Submensaje mañana diálisis:
+                <input
+                  type="text"
+                  id="submessage-tomorrow"
+                  value="Prepárate esta noche."
+                  maxlength="100"
+              /></label>
+              <label
+                >Mensaje descanso:
+                <input
+                  type="text"
+                  id="message-rest"
+                  value="HOY DESCANSO"
+                  maxlength="50"
+              /></label>
+              <label
+                >Submensaje descanso:
+                <input
+                  type="text"
+                  id="submessage-rest"
+                  value="No hay diálisis hoy."
+                  maxlength="100"
+              /></label>
+              <label
+                >Mensaje modo noche (con diálisis):
+                <input
+                  type="text"
+                  id="message-night-tomorrow"
+                  value="Es de noche. Mañana hay diálisis. Duerme tranquilo."
+                  maxlength="100"
+              /></label>
+              <label
+                >Mensaje modo noche (sin diálisis):
+                <input
+                  type="text"
+                  id="message-night-rest"
+                  value="Es de noche. Mañana no hay diálisis. Descansa."
+                  maxlength="100"
+              /></label>
+            </div>
+            <div class="message-help">
+              <small>
+                <strong>Variables disponibles:</strong><br />
+                • {hora} - Se reemplaza con la hora de ambulancia<br />
+                • {horaFin} - Se reemplaza con la hora de fin de diálisis
+              </small>
+            </div>
+          </div>
+
+          <div class="config-section">
+            <h3>Opciones</h3>
+            <label
+              ><input type="checkbox" id="show-time" checked /> Mostrar
+              hora</label
+            >
+            <label
+              ><input type="checkbox" id="enable-animations" checked />
+              Animaciones</label
+            >
+            <label><input type="checkbox" id="enable-audio" /> Audio</label>
+          </div>
+
+          <div class="config-actions">
+            <button id="save-config" class="btn btn-primary">Guardar</button>
+            <button id="export-config" class="btn btn-secondary">
+              Exportar
+            </button>
+            <button id="import-config" class="btn btn-secondary">
+              Importar
+            </button>
+            <button id="close-config" class="btn btn-secondary">Cerrar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input oculto para importar configuración -->
+      <input
+        type="file"
+        id="import-file"
+        accept=".json"
+        style="display: none"
+      />
+    </div>
+
+    <script src="safari-compat.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

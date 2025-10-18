@@ -1,0 +1,22 @@
+{
+  "name": "Dialysis Clock - OpenCareClock v2",
+  "short_name": "Dialysis Clock",
+  "description": "Aplicación para reducir ansiedad en pacientes de diálisis",
+  "start_url": "./index.html",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "theme_color": "#2196F3",
+  "background_color": "#2196F3",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
