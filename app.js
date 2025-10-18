@@ -79,12 +79,12 @@ DialysisClock.prototype.initializeIconTemplates = function () {
       '<rect x="14" y="32" width="4" height="8" fill="#ffffff" />' +
       '<rect x="12" y="34" width="8" height="4" fill="#ffffff" />' +
       '<rect x="44" y="34" width="6" height="4" rx="1" fill="#1e88e5" />' +
-      '</svg>',
+      "</svg>",
     completed:
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="presentation" focusable="false">' +
-      '<circle cx="32" cy="32" r="28" fill="#2e7d32" />' +
-      '<path d="M27.5 39.5l-7.5-7.7a2.4 2.4 0 0 1 3.4-3.4l5 5.1 11.7-12.2a2.4 2.4 0 1 1 3.4 3.4L31 39.5a2.4 2.4 0 0 1-3.5 0z" fill="#ffffff" />' +
-      '</svg>',
+      '<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+      '<circle cx="12" cy="12" r="10" stroke="#ffffffff" stroke-width="1.5"/>' +
+      '<path d="M8.5 12.5L10.5 14.5L15.5 9.5" stroke="#ffffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+      "</svg>",
     tomorrow:
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="presentation" focusable="false">' +
       '<rect x="8" y="12" width="48" height="44" rx="4" fill="#ffb74d" />' +
@@ -94,7 +94,7 @@ DialysisClock.prototype.initializeIconTemplates = function () {
       '<rect x="40" y="8" width="6" height="12" rx="2" fill="#fb8c00" />' +
       '<rect x="20" y="32" width="8" height="8" rx="1.5" fill="#ffb74d" />' +
       '<rect x="36" y="32" width="8" height="8" rx="1.5" fill="#ffb74d" />' +
-      '</svg>',
+      "</svg>",
     rest:
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="presentation" focusable="false">' +
       '<rect x="6" y="28" width="52" height="20" rx="3" fill="#42a5f5" />' +
@@ -103,7 +103,7 @@ DialysisClock.prototype.initializeIconTemplates = function () {
       '<rect x="6" y="44" width="52" height="6" fill="#1e88e5" />' +
       '<rect x="8" y="50" width="6" height="8" fill="#1e88e5" />' +
       '<rect x="50" y="50" width="6" height="8" fill="#1e88e5" />' +
-      '</svg>',
+      "</svg>",
     night:
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="presentation" focusable="false">' +
       '<circle cx="32" cy="32" r="24" fill="#5e35b1" />' +
@@ -111,7 +111,7 @@ DialysisClock.prototype.initializeIconTemplates = function () {
       '<circle cx="44" cy="22" r="3" fill="#fff176" />' +
       '<circle cx="48" cy="30" r="2" fill="#fff176" />' +
       '<circle cx="40" cy="36" r="2" fill="#fff176" />' +
-      '</svg>'
+      "</svg>",
   };
 };
 
@@ -292,7 +292,8 @@ DialysisClock.prototype.getCurrentState = function () {
       });
 
       if (timeUntilAmbulance <= 15) {
-        subMessage = "¡La ambulancia viene pronto! (" + this.config.ambulanceTime + ")";
+        subMessage =
+          "¡La ambulancia viene pronto! (" + this.config.ambulanceTime + ")";
       }
 
       return {
@@ -341,7 +342,11 @@ DialysisClock.prototype.getCurrentState = function () {
   };
 };
 
-DialysisClock.prototype.isInNightMode = function (currentTime, nightStart, nightEnd) {
+DialysisClock.prototype.isInNightMode = function (
+  currentTime,
+  nightStart,
+  nightEnd
+) {
   if (nightStart <= nightEnd) {
     // Modo noche en el mismo día (ej: 22:00 - 06:00)
     return currentTime >= nightStart || currentTime < nightEnd;
@@ -366,7 +371,10 @@ DialysisClock.prototype.processMessage = function (message, variables) {
   for (var key in variables) {
     if (variables.hasOwnProperty(key)) {
       var placeholder = "{" + key + "}";
-      processedMessage = processedMessage.replace(new RegExp(placeholder, "g"), variables[key]);
+      processedMessage = processedMessage.replace(
+        new RegExp(placeholder, "g"),
+        variables[key]
+      );
     }
   }
 
@@ -413,7 +421,7 @@ DialysisClock.prototype.updateDisplay = function () {
   if (stateClass === "night-tomorrow" || stateClass === "night-rest") {
     stateClass = "night";
   }
-  this.mainScreen.className = 'main-screen state-' + stateClass;
+  this.mainScreen.className = "main-screen state-" + stateClass;
   this.mainScreen.style.backgroundColor = state.color;
 
   // Aplicar animación si es necesario
@@ -433,7 +441,11 @@ DialysisClock.prototype.updateDisplay = function () {
   }
 
   // Reproducir audio si está habilitado
-  if (this.config.enableAudio && state.type !== "night-tomorrow" && state.type !== "night-rest") {
+  if (
+    this.config.enableAudio &&
+    state.type !== "night-tomorrow" &&
+    state.type !== "night-rest"
+  ) {
     this.playAudio(state.type);
   }
 };
@@ -450,8 +462,10 @@ DialysisClock.prototype.playAudio = function (type) {
     var audio = new Audio(audioFiles[type]);
     audio.volume = 0.7;
     var p = audio.play();
-    if (p && typeof p.catch === 'function') {
-      p.catch(function (e) { console.warn("No se pudo reproducir audio:", e); });
+    if (p && typeof p.catch === "function") {
+      p.catch(function (e) {
+        console.warn("No se pudo reproducir audio:", e);
+      });
     }
   }
 };
@@ -517,7 +531,10 @@ DialysisClock.prototype.getDayNumber = function (dayName) {
 DialysisClock.prototype.saveConfiguration = function () {
   this.config.dialysisDays = [];
   for (var day in this.dayCheckboxes) {
-    if (this.dayCheckboxes.hasOwnProperty(day) && this.dayCheckboxes[day].checked) {
+    if (
+      this.dayCheckboxes.hasOwnProperty(day) &&
+      this.dayCheckboxes[day].checked
+    ) {
       this.config.dialysisDays.push(this.getDayNumber(day));
     }
   }
@@ -537,16 +554,27 @@ DialysisClock.prototype.saveConfiguration = function () {
   this.config.enableAudio = this.enableAudio.checked;
 
   // Guardar mensajes configurables
-  this.config.messages.today = this.messageToday.value.trim() || "HOY HAY DIÁLISIS";
-  this.config.messages.todaySub = this.submessageToday.value.trim() || "La ambulancia viene a las {hora}.";
-  this.config.messages.completed = this.messageCompleted.value.trim() || "YA FUE A DIÁLISIS";
-  this.config.messages.completedSub = this.submessageCompleted.value.trim() || "Descansa, ya pasó.";
-  this.config.messages.tomorrow = this.messageTomorrow.value.trim() || "MAÑANA HAY DIÁLISIS";
-  this.config.messages.tomorrowSub = this.submessageTomorrow.value.trim() || "Prepárate esta noche.";
+  this.config.messages.today =
+    this.messageToday.value.trim() || "HOY HAY DIÁLISIS";
+  this.config.messages.todaySub =
+    this.submessageToday.value.trim() || "La ambulancia viene a las {hora}.";
+  this.config.messages.completed =
+    this.messageCompleted.value.trim() || "YA FUE A DIÁLISIS";
+  this.config.messages.completedSub =
+    this.submessageCompleted.value.trim() || "Descansa, ya pasó.";
+  this.config.messages.tomorrow =
+    this.messageTomorrow.value.trim() || "MAÑANA HAY DIÁLISIS";
+  this.config.messages.tomorrowSub =
+    this.submessageTomorrow.value.trim() || "Prepárate esta noche.";
   this.config.messages.rest = this.messageRest.value.trim() || "HOY DESCANSO";
-  this.config.messages.restSub = this.submessageRest.value.trim() || "No hay diálisis hoy.";
-  this.config.messages.nightTomorrow = this.messageNightTomorrow.value.trim() || "Es de noche. Mañana hay diálisis. Duerme tranquilo.";
-  this.config.messages.nightRest = this.messageNightRest.value.trim() || "Es de noche. Mañana no hay diálisis. Descansa.";
+  this.config.messages.restSub =
+    this.submessageRest.value.trim() || "No hay diálisis hoy.";
+  this.config.messages.nightTomorrow =
+    this.messageNightTomorrow.value.trim() ||
+    "Es de noche. Mañana hay diálisis. Duerme tranquilo.";
+  this.config.messages.nightRest =
+    this.messageNightRest.value.trim() ||
+    "Es de noche. Mañana no hay diálisis. Descansa.";
 
   this.saveConfig();
   this.updateDisplay();
@@ -583,7 +611,9 @@ DialysisClock.prototype.handleImportFile = function (event) {
       self.updateDisplay();
       alert("Configuración importada correctamente.");
     } catch (error) {
-      alert("Error al importar la configuración. Verifique que el archivo sea válido.");
+      alert(
+        "Error al importar la configuración. Verifique que el archivo sea válido."
+      );
     }
   };
   reader.readAsText(file);
@@ -705,4 +735,3 @@ document.addEventListener(
   },
   false
 );
-
