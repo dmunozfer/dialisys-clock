@@ -243,7 +243,8 @@ DialysisClock.prototype.getCurrentState = function () {
       });
 
       if (timeUntilAmbulance <= 15) {
-        subMessage = "¡La ambulancia viene pronto! (" + this.config.ambulanceTime + ")";
+        subMessage =
+          "¡La ambulancia viene pronto! (" + this.config.ambulanceTime + ")";
       }
 
       return {
@@ -292,7 +293,11 @@ DialysisClock.prototype.getCurrentState = function () {
   };
 };
 
-DialysisClock.prototype.isInNightMode = function (currentTime, nightStart, nightEnd) {
+DialysisClock.prototype.isInNightMode = function (
+  currentTime,
+  nightStart,
+  nightEnd
+) {
   if (nightStart <= nightEnd) {
     // Modo noche en el mismo día (ej: 22:00 - 06:00)
     return currentTime >= nightStart || currentTime < nightEnd;
@@ -317,7 +322,10 @@ DialysisClock.prototype.processMessage = function (message, variables) {
   for (var key in variables) {
     if (variables.hasOwnProperty(key)) {
       var placeholder = "{" + key + "}";
-      processedMessage = processedMessage.replace(new RegExp(placeholder, "g"), variables[key]);
+      processedMessage = processedMessage.replace(
+        new RegExp(placeholder, "g"),
+        variables[key]
+      );
     }
   }
 
@@ -342,7 +350,7 @@ DialysisClock.prototype.updateDisplay = function () {
   // Actualizar icono de estado
   var iconMap = {
     today: "icons/ambulance.svg",
-    completed: "icons/completed.svg",
+    completed: "icons/test.svg",
     tomorrow: "icons/calendar.svg",
     rest: "icons/rest.svg",
     "night-tomorrow": "icons/sleep.svg",
@@ -351,9 +359,10 @@ DialysisClock.prototype.updateDisplay = function () {
   var icon = iconMap[state.type] || "";
   if (this.statusIcon) {
     if (icon) {
-      this.statusIcon.innerHTML = '<img src="' + icon + '" alt="' + state.type + '">';
+      this.statusIcon.innerHTML =
+        '<img src="' + icon + '" alt="' + state.type + '">';
     } else {
-      this.statusIcon.innerHTML = '';
+      this.statusIcon.innerHTML = "";
     }
   }
 
@@ -362,7 +371,7 @@ DialysisClock.prototype.updateDisplay = function () {
   if (stateClass === "night-tomorrow" || stateClass === "night-rest") {
     stateClass = "night";
   }
-  this.mainScreen.className = 'main-screen state-' + stateClass;
+  this.mainScreen.className = "main-screen state-" + stateClass;
   this.mainScreen.style.backgroundColor = state.color;
 
   // Aplicar animación si es necesario
@@ -382,7 +391,11 @@ DialysisClock.prototype.updateDisplay = function () {
   }
 
   // Reproducir audio si está habilitado
-  if (this.config.enableAudio && state.type !== "night-tomorrow" && state.type !== "night-rest") {
+  if (
+    this.config.enableAudio &&
+    state.type !== "night-tomorrow" &&
+    state.type !== "night-rest"
+  ) {
     this.playAudio(state.type);
   }
 };
@@ -399,8 +412,10 @@ DialysisClock.prototype.playAudio = function (type) {
     var audio = new Audio(audioFiles[type]);
     audio.volume = 0.7;
     var p = audio.play();
-    if (p && typeof p.catch === 'function') {
-      p.catch(function (e) { console.warn("No se pudo reproducir audio:", e); });
+    if (p && typeof p.catch === "function") {
+      p.catch(function (e) {
+        console.warn("No se pudo reproducir audio:", e);
+      });
     }
   }
 };
@@ -466,7 +481,10 @@ DialysisClock.prototype.getDayNumber = function (dayName) {
 DialysisClock.prototype.saveConfiguration = function () {
   this.config.dialysisDays = [];
   for (var day in this.dayCheckboxes) {
-    if (this.dayCheckboxes.hasOwnProperty(day) && this.dayCheckboxes[day].checked) {
+    if (
+      this.dayCheckboxes.hasOwnProperty(day) &&
+      this.dayCheckboxes[day].checked
+    ) {
       this.config.dialysisDays.push(this.getDayNumber(day));
     }
   }
@@ -486,16 +504,27 @@ DialysisClock.prototype.saveConfiguration = function () {
   this.config.enableAudio = this.enableAudio.checked;
 
   // Guardar mensajes configurables
-  this.config.messages.today = this.messageToday.value.trim() || "HOY HAY DIÁLISIS";
-  this.config.messages.todaySub = this.submessageToday.value.trim() || "La ambulancia viene a las {hora}.";
-  this.config.messages.completed = this.messageCompleted.value.trim() || "YA FUE A DIÁLISIS";
-  this.config.messages.completedSub = this.submessageCompleted.value.trim() || "Descansa, ya pasó.";
-  this.config.messages.tomorrow = this.messageTomorrow.value.trim() || "MAÑANA HAY DIÁLISIS";
-  this.config.messages.tomorrowSub = this.submessageTomorrow.value.trim() || "Prepárate esta noche.";
+  this.config.messages.today =
+    this.messageToday.value.trim() || "HOY HAY DIÁLISIS";
+  this.config.messages.todaySub =
+    this.submessageToday.value.trim() || "La ambulancia viene a las {hora}.";
+  this.config.messages.completed =
+    this.messageCompleted.value.trim() || "YA FUE A DIÁLISIS";
+  this.config.messages.completedSub =
+    this.submessageCompleted.value.trim() || "Descansa, ya pasó.";
+  this.config.messages.tomorrow =
+    this.messageTomorrow.value.trim() || "MAÑANA HAY DIÁLISIS";
+  this.config.messages.tomorrowSub =
+    this.submessageTomorrow.value.trim() || "Prepárate esta noche.";
   this.config.messages.rest = this.messageRest.value.trim() || "HOY DESCANSO";
-  this.config.messages.restSub = this.submessageRest.value.trim() || "No hay diálisis hoy.";
-  this.config.messages.nightTomorrow = this.messageNightTomorrow.value.trim() || "Es de noche. Mañana hay diálisis. Duerme tranquilo.";
-  this.config.messages.nightRest = this.messageNightRest.value.trim() || "Es de noche. Mañana no hay diálisis. Descansa.";
+  this.config.messages.restSub =
+    this.submessageRest.value.trim() || "No hay diálisis hoy.";
+  this.config.messages.nightTomorrow =
+    this.messageNightTomorrow.value.trim() ||
+    "Es de noche. Mañana hay diálisis. Duerme tranquilo.";
+  this.config.messages.nightRest =
+    this.messageNightRest.value.trim() ||
+    "Es de noche. Mañana no hay diálisis. Descansa.";
 
   this.saveConfig();
   this.updateDisplay();
@@ -532,7 +561,9 @@ DialysisClock.prototype.handleImportFile = function (event) {
       self.updateDisplay();
       alert("Configuración importada correctamente.");
     } catch (error) {
-      alert("Error al importar la configuración. Verifique que el archivo sea válido.");
+      alert(
+        "Error al importar la configuración. Verifique que el archivo sea válido."
+      );
     }
   };
   reader.readAsText(file);
@@ -654,4 +685,3 @@ document.addEventListener(
   },
   false
 );
-
