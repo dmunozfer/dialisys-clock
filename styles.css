@@ -26,11 +26,20 @@ body {
   display: block;
   color: #ffffff;
   opacity: 0.85; /* blanco con opacidad para coherencia visual */
-  font-size: min(25vw, 180px); /* 20–25% del ancho, no dominante */
+  font-size: min(30vw, 216px); /* +20% aprox: icono ancla el significado */
   line-height: 1;
-  margin-top: 6vh; /* aire por encima para que no parezca parte del ttulo */
-  margin-bottom: 1rem; /* separacin del texto principal */
+  margin-top: 5vh; /* ms aire por arriba (tablet/mobile) */
+  margin-bottom: 1.5rem; /* separacin clara del texto (10-12% ~ 0.1-0.12em) */
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* Escalado fino en portrait (tablets) */
+@media (orientation: portrait) and (min-width: 768px) {
+  .status-icon {
+    font-size: min(34vw, 260px);
+    margin-top: clamp(4rem, 6vh, 10vh);
+    margin-bottom: clamp(1.5rem, 2.5vh, 3rem);
+  }
 }
 
 /* Pantalla principal */
@@ -382,6 +391,7 @@ body {
 @media (orientation: portrait) {
   .main-message {
     font-size: clamp(3rem, 12vw, 6rem);
+    margin-top: 0.6rem;
     margin-bottom: 0.6rem;
     line-height: 1.1;
   }
@@ -467,6 +477,7 @@ body {
   /* Optimización adicional para móviles en vertical */
   .main-message {
     font-size: clamp(2.5rem, 10vw, 5rem);
+    margin-top: 0.5rem;
     margin-bottom: 0.5rem;
     line-height: 1.1;
   }
@@ -506,7 +517,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   text-align: center;
 }
