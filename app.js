@@ -22,6 +22,7 @@ class DialysisClock {
   initializeElements() {
     this.mainScreen = document.getElementById("main-screen");
     this.configScreen = document.getElementById("config-screen");
+    this.statusIcon = document.getElementById("status-icon");
     this.mainMessage = document.getElementById("main-message");
     this.subMessage = document.getElementById("sub-message");
     this.timeDisplay = document.getElementById("time-display");
@@ -327,6 +328,26 @@ class DialysisClock {
     // Actualizar mensajes
     this.mainMessage.textContent = state.message;
     this.subMessage.textContent = state.subMessage || "";
+
+    // Actualizar icono de estado (solo 3 casos: hoy, completado, noche)
+    const iconMap = {
+      today: "🚑",
+      completed: "✅",
+      tomorrow: "📅",
+      rest: "🌤️",
+      "night-tomorrow": "🌙",
+      "night-rest": "🌙",
+    };
+    const icon = iconMap[state.type] || "";
+    if (this.statusIcon) {
+      if (icon) {
+        this.statusIcon.textContent = icon;
+        this.statusIcon.style.display = "block";
+      } else {
+        this.statusIcon.textContent = "";
+        this.statusIcon.style.display = "none";
+      }
+    }
 
     // Actualizar colores
     this.mainScreen.className = `main-screen state-${state.type}`;

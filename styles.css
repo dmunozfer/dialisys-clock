@@ -21,6 +21,18 @@ body {
   position: relative;
 }
 
+/* Icono de estado principal */
+.status-icon {
+  display: block;
+  color: #ffffff;
+  opacity: 0.85; /* blanco con opacidad para coherencia visual */
+  font-size: min(25vw, 180px); /* 20–25% del ancho, no dominante */
+  line-height: 1;
+  margin-top: 6vh; /* aire por encima para que no parezca parte del ttulo */
+  margin-bottom: 1rem; /* separacin del texto principal */
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
 /* Pantalla principal */
 .main-screen {
   width: 100%;
