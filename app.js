@@ -136,29 +136,28 @@ class DialysisClock {
     const defaultConfig = {
       dialysisDays: [2, 4, 6], // Martes, Jueves, Sábado
       ambulanceTime: "06:30",
-      dialysisEndTime: "08:00",
+      dialysisEndTime: "12:00",
       nightStart: "22:00",
       nightEnd: "06:00",
       colors: {
-        today: "#66BB6A", // verde más suave
-        completed: "#388E3C", // verde oscuro apagado
-        tomorrow: "#FFB74D", // naranja más cálido
-        rest: "#42A5F5", // azul medio
-        night: "#5E35B1", // púrpura oscuro relajante
+        today: "#66BB6A",
+        completed: "#388E3C",
+        tomorrow: "#FFB74D",
+        rest: "#42A5F5",
+        night: "#5E35B1",
       },
       messages: {
         today: "HOY HAY DIÁLISIS",
         todaySub: "La ambulancia viene a las {hora}.",
         completed: "YA HAS IDO A DIÁLISIS",
-        completedSub: "Descansa, ya ha pasado.",
+        completedSub: "Descansa tranquilo, ya ha pasado.",
         tomorrow: "MAÑANA HAY DIÁLISIS",
-        tomorrowSub:
-          "Prepárate esta noche, la ambulancia vendrá por la mañana.",
+        tomorrowSub: "Descansa tranquilo, mañana te recogerá la ambulancia.",
         rest: "HOY DESCANSO",
-        restSub: "No hay diálisis hoy. Puedes estar tranquilo.",
-        nightTomorrow: "Es de noche. Mañana hay diálisis. Duerme tranquilo.",
-        nightRest:
-          "Es de noche. Mañana no hay diálisis. Descansa sin preocuparte.",
+        restSub: "No hay diálisis hoy ni mañana. Descansa tranquilo.",
+        nightTomorrow:
+          "Mañana hay diálisis. Duerme tranquilo, aún falta mucho.",
+        nightRest: "No hay diálisis mañana. Duerme tranquilo.",
       },
       showTime: true,
       enableAnimations: true,
