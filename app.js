@@ -10,7 +10,6 @@ function DialysisClock() {
 
   this.initializeElements();
   this.setupEventListeners();
-  this.initializeIconTemplates();
   this.updateDisplay();
   this.startClock();
 }
@@ -65,54 +64,6 @@ DialysisClock.prototype.initializeElements = function () {
   this.importConfigBtn = document.getElementById("import-config");
   this.closeConfigBtn = document.getElementById("close-config");
   this.importFile = document.getElementById("import-file");
-};
-
-DialysisClock.prototype.initializeIconTemplates = function () {
-  this.iconTemplates = {
-    today:
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="presentation" focusable="false">' +
-      '<rect x="4" y="26" width="40" height="20" rx="3" fill="#ffffff" stroke="#1976d2" stroke-width="2" />' +
-      '<rect x="40" y="30" width="20" height="16" rx="2" fill="#bbdefb" stroke="#1976d2" stroke-width="2" />' +
-      '<circle cx="18" cy="50" r="6" fill="#37474f" />' +
-      '<circle cx="46" cy="50" r="6" fill="#37474f" />' +
-      '<rect x="10" y="30" width="12" height="12" fill="#e53935" />' +
-      '<rect x="14" y="32" width="4" height="8" fill="#ffffff" />' +
-      '<rect x="12" y="34" width="8" height="4" fill="#ffffff" />' +
-      '<rect x="44" y="34" width="6" height="4" rx="1" fill="#1e88e5" />' +
-      '</svg>',
-    completed:
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="presentation" focusable="false">' +
-      '<circle cx="32" cy="32" r="28" fill="#2e7d32" />' +
-      '<path d="M27.5 39.5l-7.5-7.7a2.4 2.4 0 0 1 3.4-3.4l5 5.1 11.7-12.2a2.4 2.4 0 1 1 3.4 3.4L31 39.5a2.4 2.4 0 0 1-3.5 0z" fill="#ffffff" />' +
-      '</svg>',
-    tomorrow:
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="presentation" focusable="false">' +
-      '<rect x="8" y="12" width="48" height="44" rx="4" fill="#ffb74d" />' +
-      '<rect x="8" y="18" width="48" height="38" rx="4" fill="#ffffff" />' +
-      '<rect x="8" y="18" width="48" height="10" rx="4" fill="#fb8c00" />' +
-      '<rect x="18" y="8" width="6" height="12" rx="2" fill="#fb8c00" />' +
-      '<rect x="40" y="8" width="6" height="12" rx="2" fill="#fb8c00" />' +
-      '<rect x="20" y="32" width="8" height="8" rx="1.5" fill="#ffb74d" />' +
-      '<rect x="36" y="32" width="8" height="8" rx="1.5" fill="#ffb74d" />' +
-      '</svg>',
-    rest:
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="presentation" focusable="false">' +
-      '<rect x="6" y="28" width="52" height="20" rx="3" fill="#42a5f5" />' +
-      '<rect x="10" y="24" width="20" height="10" rx="3" fill="#bbdefb" />' +
-      '<rect x="14" y="20" width="12" height="8" rx="3" fill="#90caf9" />' +
-      '<rect x="6" y="44" width="52" height="6" fill="#1e88e5" />' +
-      '<rect x="8" y="50" width="6" height="8" fill="#1e88e5" />' +
-      '<rect x="50" y="50" width="6" height="8" fill="#1e88e5" />' +
-      '</svg>',
-    night:
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="presentation" focusable="false">' +
-      '<circle cx="32" cy="32" r="24" fill="#5e35b1" />' +
-      '<path d="M40 18a16 16 0 1 0 0 28 18 18 0 1 1 0-28z" fill="#d1c4e9" />' +
-      '<circle cx="44" cy="22" r="3" fill="#fff176" />' +
-      '<circle cx="48" cy="30" r="2" fill="#fff176" />' +
-      '<circle cx="40" cy="36" r="2" fill="#fff176" />' +
-      '</svg>'
-  };
 };
 
 DialysisClock.prototype.setupEventListeners = function () {
@@ -373,24 +324,6 @@ DialysisClock.prototype.processMessage = function (message, variables) {
   return processedMessage;
 };
 
-DialysisClock.prototype.renderStatusIcon = function (stateType) {
-  if (!this.statusIcon) {
-    return;
-  }
-
-  var iconKey = stateType;
-  if (iconKey === "night-tomorrow" || iconKey === "night-rest") {
-    iconKey = "night";
-  }
-
-  var template = this.iconTemplates && this.iconTemplates[iconKey];
-  if (template) {
-    this.statusIcon.innerHTML = template;
-  } else {
-    this.statusIcon.innerHTML = "";
-  }
-};
-
 DialysisClock.prototype.formatTime = function (date) {
   var hours = date.getHours();
   var minutes = date.getMinutes();
@@ -406,7 +339,23 @@ DialysisClock.prototype.updateDisplay = function () {
   this.mainMessage.textContent = state.message;
   this.subMessage.textContent = state.subMessage || "";
 
-  this.renderStatusIcon(state.type);
+  // Actualizar icono de estado
+  var iconMap = {
+    today: "icons/ambulance.svg",
+    completed: "icons/completed.svg",
+    tomorrow: "icons/calendar.svg",
+    rest: "icons/rest.svg",
+    "night-tomorrow": "icons/sleep.svg",
+    "night-rest": "icons/sleep.svg",
+  };
+  var icon = iconMap[state.type] || "";
+  if (this.statusIcon) {
+    if (icon) {
+      this.statusIcon.innerHTML = '<img src="' + icon + '" alt="' + state.type + '">';
+    } else {
+      this.statusIcon.innerHTML = '';
+    }
+  }
 
   // Actualizar colores
   var stateClass = state.type;
