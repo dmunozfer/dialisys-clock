@@ -138,7 +138,7 @@ class DialysisClock {
       dialysisDays: [2, 4, 6], // Martes, Jueves, Sábado
       ambulanceTime: "06:30",
       dialysisEndTime: "12:00",
-      nightStart: "22:00",
+      nightStart: "21:30",
       nightEnd: "06:00",
       colors: {
         today: "#66BB6A",
@@ -333,10 +333,10 @@ class DialysisClock {
     const iconMap = {
       today: "icons/ambulance.svg",
       completed: "icons/completed.svg",
-      tomorrow: "icons/calendar2.svg",
-      rest: "icons/rest2.svg",
-      "night-tomorrow": "icons/rest2.svg",
-      "night-rest": "icons/rest2.svg",
+      tomorrow: "icons/calendar.svg",
+      rest: "icons/rest.svg",
+      "night-tomorrow": "icons/sleep.svg",
+      "night-rest": "icons/sleep.svg",
     };
     const icon = iconMap[state.type] || "";
     if (this.statusIcon) {

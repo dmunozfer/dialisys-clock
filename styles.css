@@ -26,7 +26,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 5vh; /* mismo aire superior */
+  margin-top: 1vh; /* mismo aire superior */
   margin-bottom: 1.5rem; /* separación con el texto */
   filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.2));
 }
