@@ -89,30 +89,29 @@
     if (!window.CSS.supports("display", "grid")) {
       // Fallback para navegadores sin soporte de Grid
       var style = document.createElement("style");
-      style.textContent = `
-                .days-selector {
-                    display: -webkit-flex;
-                    display: flex;
-                    -webkit-flex-wrap: wrap;
-                    flex-wrap: wrap;
-                }
-                .days-selector label {
-                    -webkit-flex: 1 1 120px;
-                    flex: 1 1 120px;
-                    min-width: 120px;
-                }
-                .color-config {
-                    display: -webkit-flex;
-                    display: flex;
-                    -webkit-flex-wrap: wrap;
-                    flex-wrap: wrap;
-                }
-                .color-config label {
-                    -webkit-flex: 1 1 200px;
-                    flex: 1 1 200px;
-                    min-width: 200px;
-                }
-            `;
+      style.textContent =
+        ".days-selector {\n" +
+        "  display: -webkit-flex;\n" +
+        "  display: flex;\n" +
+        "  -webkit-flex-wrap: wrap;\n" +
+        "  flex-wrap: wrap;\n" +
+        "}\n" +
+        ".days-selector label {\n" +
+        "  -webkit-flex: 1 1 120px;\n" +
+        "  flex: 1 1 120px;\n" +
+        "  min-width: 120px;\n" +
+        "}\n" +
+        ".color-config {\n" +
+        "  display: -webkit-flex;\n" +
+        "  display: flex;\n" +
+        "  -webkit-flex-wrap: wrap;\n" +
+        "  flex-wrap: wrap;\n" +
+        "}\n" +
+        ".color-config label {\n" +
+        "  -webkit-flex: 1 1 200px;\n" +
+        "  flex: 1 1 200px;\n" +
+        "  min-width: 200px;\n" +
+        "}\n";
       document.head.appendChild(style);
     }
   }
@@ -168,11 +167,11 @@
     document.addEventListener(
       "touchmove",
       function (event) {
-        if (event.target.classList.contains("no-scroll")) {
+        if (event.target.classList && event.target.classList.contains("no-scroll")) {
           event.preventDefault();
         }
       },
-      { passive: false }
+      false
     );
   }
 
