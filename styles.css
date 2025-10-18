@@ -121,6 +121,20 @@ body {
   opacity: 0.9;
 }
 
+.day-display {
+  font-size: 2.5rem;
+  color: #ffffff;
+  font-weight: 500;
+  position: absolute;
+  bottom: 7.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  letter-spacing: 0.05rem;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  opacity: 0.85;
+}
+
 /* Zona de acceso a configuración (invisible) */
 .config-trigger {
   position: absolute;
@@ -469,6 +483,16 @@ body {
     opacity: 0.9;
   }
 
+  .day-display {
+    font-size: 1.6rem;
+    font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+    bottom: 6.8rem;
+    color: #ffffff;
+    font-weight: 500;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    opacity: 0.85;
+  }
+
   .message-container {
     max-width: 95%;
     padding: 1rem 0.5rem 7rem 0.5rem;
@@ -501,6 +525,16 @@ body {
     font-weight: 600;
     text-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
     opacity: 0.9;
+  }
+
+  .day-display {
+    font-size: 1.8rem;
+    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+    bottom: 7.8rem;
+    color: #ffffff;
+    font-weight: 500;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    opacity: 0.85;
   }
 
   .message-container {
@@ -561,6 +595,16 @@ body {
     opacity: 0.9;
   }
 
+  .day-display {
+    font-size: 1.4rem;
+    font-size: clamp(1.4rem, 4.5vw, 2.2rem);
+    bottom: 6.2rem;
+    color: #ffffff;
+    font-weight: 500;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    opacity: 0.85;
+  }
+
   .message-container {
     padding: 1rem 0.5rem 6rem 0.5rem;
   }
@@ -595,6 +639,12 @@ body {
     color: #ffffff;
     text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
     font-weight: 700;
+  }
+
+  .day-display {
+    color: #ffffff;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    font-weight: 600;
   }
 
   .config-container {

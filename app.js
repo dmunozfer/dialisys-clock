@@ -20,6 +20,7 @@ DialysisClock.prototype.initializeElements = function () {
   this.statusIcon = document.getElementById("status-icon");
   this.mainMessage = document.getElementById("main-message");
   this.subMessage = document.getElementById("sub-message");
+  this.dayDisplay = document.getElementById("day-display");
   this.timeDisplay = document.getElementById("time-display");
   this.configTrigger = document.getElementById("config-trigger");
 
@@ -43,6 +44,7 @@ DialysisClock.prototype.initializeElements = function () {
   this.colorTomorrow = document.getElementById("color-tomorrow");
   this.colorRest = document.getElementById("color-rest");
   this.colorNight = document.getElementById("color-night");
+  this.showDay = document.getElementById("show-day");
   this.showTime = document.getElementById("show-time");
   this.enableAnimations = document.getElementById("enable-animations");
   this.enableAudio = document.getElementById("enable-audio");
@@ -162,6 +164,7 @@ DialysisClock.prototype.loadConfig = function () {
       nightTomorrow: "Mañana hay diálisis. Duerme tranquilo, aún falta mucho.",
       nightRest: "No hay diálisis mañana. Duerme tranquilo.",
     },
+    showDay: true,
     showTime: true,
     enableAnimations: true,
     enableAudio: false,
@@ -332,6 +335,22 @@ DialysisClock.prototype.processMessage = function (message, variables) {
   return processedMessage;
 };
 
+DialysisClock.prototype.formatDay = function (date) {
+  var days = [
+    "domingo",
+    "lunes",
+    "martes",
+    "miércoles",
+    "jueves",
+    "viernes",
+    "sábado",
+  ];
+  var dayName = days[date.getDay()] || "";
+  var capitalizedDay =
+    dayName.charAt(0).toUpperCase() + dayName.slice(1).toLowerCase();
+  return capitalizedDay;
+};
+
 DialysisClock.prototype.formatTime = function (date) {
   var hours = date.getHours();
   var minutes = date.getMinutes();
@@ -381,13 +400,26 @@ DialysisClock.prototype.updateDisplay = function () {
     this.mainScreen.classList.remove("animating");
   }
 
-  // Actualizar hora
-  if (this.config.showTime) {
-    var now = new Date();
-    this.timeDisplay.textContent = this.formatTime(now);
-    this.timeDisplay.style.display = "block";
-  } else {
-    this.timeDisplay.style.display = "none";
+  var now = null;
+
+  if (this.dayDisplay) {
+    if (this.config.showDay) {
+      now = now || new Date();
+      this.dayDisplay.textContent = this.formatDay(now);
+      this.dayDisplay.style.display = "block";
+    } else {
+      this.dayDisplay.style.display = "none";
+    }
+  }
+
+  if (this.timeDisplay) {
+    if (this.config.showTime) {
+      now = now || new Date();
+      this.timeDisplay.textContent = this.formatTime(now);
+      this.timeDisplay.style.display = "block";
+    } else {
+      this.timeDisplay.style.display = "none";
+    }
   }
 
   // Reproducir audio si está habilitado
@@ -448,6 +480,7 @@ DialysisClock.prototype.loadConfigurationToForm = function () {
   this.colorTomorrow.value = this.config.colors.tomorrow;
   this.colorRest.value = this.config.colors.rest;
   this.colorNight.value = this.config.colors.night;
+  this.showDay.checked = this.config.showDay;
   this.showTime.checked = this.config.showTime;
   this.enableAnimations.checked = this.config.enableAnimations;
   this.enableAudio.checked = this.config.enableAudio;
@@ -499,6 +532,7 @@ DialysisClock.prototype.saveConfiguration = function () {
   this.config.colors.tomorrow = this.colorTomorrow.value;
   this.config.colors.rest = this.colorRest.value;
   this.config.colors.night = this.colorNight.value;
+  this.config.showDay = this.showDay.checked;
   this.config.showTime = this.showTime.checked;
   this.config.enableAnimations = this.enableAnimations.checked;
   this.config.enableAudio = this.enableAudio.checked;
