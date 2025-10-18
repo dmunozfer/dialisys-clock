@@ -349,12 +349,12 @@ DialysisClock.prototype.updateDisplay = function () {
 
   // Actualizar icono de estado
   var iconMap = {
-    today: "icons/ambulance.svg",
-    completed: "icons/test.svg",
-    tomorrow: "icons/calendar.svg",
-    rest: "icons/rest.svg",
-    "night-tomorrow": "icons/sleep.svg",
-    "night-rest": "icons/sleep.svg",
+    today: "icons/ambulance.png",
+    completed: "icons/completed.png",
+    tomorrow: "icons/calendar.png",
+    rest: "icons/rest.png",
+    "night-tomorrow": "icons/sleep.png",
+    "night-rest": "icons/sleep.png",
   };
   var icon = iconMap[state.type] || "";
   if (this.statusIcon) {
