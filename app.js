@@ -331,21 +331,19 @@ class DialysisClock {
 
     // Actualizar icono de estado (solo 3 casos: hoy, completado, noche)
     const iconMap = {
-      today: "🚑",
-      completed: "✅",
-      tomorrow: "📅",
-      rest: "🌤️",
-      "night-tomorrow": "🌙",
-      "night-rest": "🌙",
+      today: "icons/ambulance.svg",
+      completed: "icons/completed.svg",
+      tomorrow: "icons/calendar2.svg",
+      rest: "icons/rest2.svg",
+      "night-tomorrow": "icons/rest2.svg",
+      "night-rest": "icons/rest2.svg",
     };
     const icon = iconMap[state.type] || "";
     if (this.statusIcon) {
       if (icon) {
-        this.statusIcon.textContent = icon;
-        this.statusIcon.style.display = "block";
+        this.statusIcon.innerHTML = `<img src="${icon}" alt="${state.type}">`;
       } else {
-        this.statusIcon.textContent = "";
-        this.statusIcon.style.display = "none";
+        this.statusIcon.innerHTML = ``;
       }
     }
 

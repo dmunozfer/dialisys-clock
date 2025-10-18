@@ -21,22 +21,36 @@ body {
   position: relative;
 }
 
-/* Icono de estado principal */
+/* Icono de estado principal (SVG o IMG) */
 .status-icon {
-  display: block;
-  color: #ffffff;
-  opacity: 0.85; /* blanco con opacidad para coherencia visual */
-  font-size: min(30vw, 216px); /* +20% aprox: icono ancla el significado */
-  line-height: 1;
-  margin-top: 5vh; /* ms aire por arriba (tablet/mobile) */
-  margin-bottom: 1.5rem; /* separacin clara del texto (10-12% ~ 0.1-0.12em) */
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5vh; /* mismo aire superior */
+  margin-bottom: 1.5rem; /* separación con el texto */
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.2));
 }
 
-/* Escalado fino en portrait (tablets) */
+/* Ajuste general del tamaño del icono */
+.status-icon svg,
+.status-icon img {
+  width: min(30vw, 216px); /* tamaño equivalente al emoji anterior */
+  height: auto;
+  opacity: 0.85; /* misma sensación visual */
+  transition: transform 0.2s ease-out;
+}
+
+/* Pequeño rebote visual al cambiar de estado (opcional) */
+.status-icon svg.showing,
+.status-icon img.showing {
+  transform: scale(1.05);
+}
+
+/* En orientación vertical (tablet/iPad) */
 @media (orientation: portrait) and (min-width: 768px) {
-  .status-icon {
-    font-size: min(34vw, 260px);
+  .status-icon svg,
+  .status-icon img {
+    width: min(34vw, 260px);
     margin-top: clamp(4rem, 6vh, 10vh);
     margin-bottom: clamp(1.5rem, 2.5vh, 3rem);
   }
@@ -88,7 +102,7 @@ body {
 }
 
 .time-display {
-  font-size: 3.5rem;
+  font-size: 5.5rem;
   color: #ffffff;
   font-weight: 600;
   position: absolute;
@@ -405,7 +419,7 @@ body {
   }
 
   .time-display {
-    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    font-size: clamp(3.5rem, 6vw, 4.5rem);
     bottom: 3.5rem;
     color: #ffffff;
     font-weight: 600;
