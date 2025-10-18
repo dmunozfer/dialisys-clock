@@ -6,7 +6,7 @@
 }
 
 body {
-  font-family: "Arial", "Helvetica", sans-serif;
+  font-family: "Nunito", "Arial", "Helvetica", sans-serif;
   overflow: hidden;
   height: 100vh;
   user-select: none;
@@ -42,31 +42,41 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 2rem 1rem;
+  padding: 2rem 1rem 8rem 1rem; /* Más padding inferior para la hora */
   box-sizing: border-box;
+  position: relative;
 }
 
 .main-message {
   font-size: clamp(2.5rem, 12vw, 6rem);
-  font-weight: bold;
+  font-weight: 700;
   margin-bottom: 0.8rem;
   line-height: 1.1;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.05rem;
   padding: 0 1rem;
 }
 
 .sub-message {
   font-size: clamp(1rem, 4vw, 2rem);
   margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
   opacity: 0.9;
   line-height: 1.3;
   padding: 0 1rem;
+  font-weight: 400;
 }
 
 .time-display {
-  font-size: clamp(0.9rem, 3vw, 1.5rem);
-  opacity: 0.8;
-  font-weight: 300;
+  font-size: clamp(2.5rem, 6vw, 3.5rem);
+  color: #ffffff;
+  font-weight: 600;
+  position: absolute;
+  bottom: 4.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  letter-spacing: 0.05rem;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Zona de acceso a configuración (invisible) */
@@ -80,6 +90,7 @@ body {
   cursor: pointer;
   border-radius: 50%;
   transition: background-color 0.2s ease;
+  z-index: 10; /* Por encima de la hora */
 }
 
 .config-trigger:hover {
@@ -369,12 +380,16 @@ body {
   }
 
   .time-display {
-    font-size: clamp(0.8rem, 2.5vw, 1.3rem);
+    font-size: clamp(2.2rem, 5.5vw, 3rem);
+    bottom: 3.5rem;
+    color: #ffffff;
+    font-weight: 600;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
   }
 
   .message-container {
     max-width: 95%;
-    padding: 1rem 0.5rem;
+    padding: 1rem 0.5rem 7rem 0.5rem;
   }
 }
 
@@ -391,11 +406,15 @@ body {
   }
 
   .time-display {
-    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    font-size: clamp(2.8rem, 6vw, 3.2rem);
+    bottom: 5rem;
+    color: #ffffff;
+    font-weight: 600;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
   }
 
   .message-container {
-    padding: 3rem 1rem;
+    padding: 3rem 1rem 9rem 1rem;
   }
 }
 
@@ -436,8 +455,34 @@ body {
   }
 
   .time-display {
-    font-size: clamp(0.7rem, 2vw, 1.1rem);
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    bottom: 3rem;
+    color: #ffffff;
+    font-weight: 600;
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
   }
+
+  .message-container {
+    padding: 1rem 0.5rem 6rem 0.5rem;
+  }
+}
+
+/* Composición de tres niveles para mejor jerarquía visual */
+.message-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.message-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 /* Accesibilidad - alto contraste */
@@ -445,6 +490,12 @@ body {
   .main-message,
   .sub-message {
     text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+  }
+
+  .time-display {
+    color: #ffffff;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    font-weight: 700;
   }
 
   .config-container {
