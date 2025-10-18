@@ -6,17 +6,12 @@ function DialysisClock() {
   this.isNightMode = false;
   this.configTriggerPressed = false;
   this.configTriggerTimeout = null;
+  this.clockTimeout = null;
 
   this.initializeElements();
   this.setupEventListeners();
-  this.startClock();
   this.updateDisplay();
-
-  var self = this;
-  // Actualizar cada minuto
-  setInterval(function () {
-    self.updateDisplay();
-  }, 60000);
+  this.startClock();
 }
 
 DialysisClock.prototype.initializeElements = function () {
@@ -175,13 +170,14 @@ DialysisClock.prototype.loadConfig = function () {
   try {
     var saved = localStorage.getItem("dialysisClockConfig");
     if (saved) {
-      return Object.assign({}, defaultConfig, JSON.parse(saved));
+      var parsed = JSON.parse(saved);
+      return this.mergeConfigs(defaultConfig, parsed);
     }
   } catch (e) {
     console.warn("Error cargando configuración:", e);
   }
 
-  return defaultConfig;
+  return this.cloneValue(defaultConfig);
 };
 
 DialysisClock.prototype.saveConfig = function () {
@@ -208,7 +204,7 @@ DialysisClock.prototype.getCurrentState = function () {
     tomorrowN.setDate(tomorrowN.getDate() + 1);
     var tomorrowDayN = tomorrowN.getDay();
 
-    if (this.config.dialysisDays.includes(tomorrowDayN)) {
+    if (this.hasDialysisDay(tomorrowDayN)) {
       return {
         type: "night-tomorrow",
         message: this.config.messages.nightTomorrow,
@@ -224,7 +220,7 @@ DialysisClock.prototype.getCurrentState = function () {
   }
 
   // Verificar si hoy es día de diálisis
-  if (this.config.dialysisDays.includes(currentDay)) {
+  if (this.hasDialysisDay(currentDay)) {
     var ambulanceTime = this.parseTime(this.config.ambulanceTime);
     var dialysisEndTime = this.parseTime(this.config.dialysisEndTime);
     var timeUntilAmbulance = ambulanceTime - currentTime;
@@ -278,7 +274,7 @@ DialysisClock.prototype.getCurrentState = function () {
   tomorrow.setDate(tomorrow.getDate() + 1);
   var tomorrowDay = tomorrow.getDay();
 
-  if (this.config.dialysisDays.includes(tomorrowDay)) {
+  if (this.hasDialysisDay(tomorrowDay)) {
     return {
       type: "tomorrow",
       message: this.config.messages.tomorrow,
@@ -318,12 +314,22 @@ DialysisClock.prototype.processMessage = function (message, variables) {
   variables = variables || {};
 
   // Reemplazar variables
-  Object.keys(variables).forEach(function (key) {
-    var placeholder = "{" + key + "}";
-    processedMessage = processedMessage.replace(new RegExp(placeholder, "g"), variables[key]);
-  });
+  for (var key in variables) {
+    if (variables.hasOwnProperty(key)) {
+      var placeholder = "{" + key + "}";
+      processedMessage = processedMessage.replace(new RegExp(placeholder, "g"), variables[key]);
+    }
+  }
 
   return processedMessage;
+};
+
+DialysisClock.prototype.formatTime = function (date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var hoursText = hours < 10 ? "0" + hours : "" + hours;
+  var minutesText = minutes < 10 ? "0" + minutes : "" + minutes;
+  return hoursText + ":" + minutesText;
 };
 
 DialysisClock.prototype.updateDisplay = function () {
@@ -352,7 +358,11 @@ DialysisClock.prototype.updateDisplay = function () {
   }
 
   // Actualizar colores
-  this.mainScreen.className = 'main-screen state-' + state.type;
+  var stateClass = state.type;
+  if (stateClass === "night-tomorrow" || stateClass === "night-rest") {
+    stateClass = "night";
+  }
+  this.mainScreen.className = 'main-screen state-' + stateClass;
   this.mainScreen.style.backgroundColor = state.color;
 
   // Aplicar animación si es necesario
@@ -365,16 +375,7 @@ DialysisClock.prototype.updateDisplay = function () {
   // Actualizar hora
   if (this.config.showTime) {
     var now = new Date();
-    try {
-      this.timeDisplay.textContent = now.toLocaleTimeString("es-ES", {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    } catch (e) {
-      var h = now.getHours();
-      var m = now.getMinutes();
-      this.timeDisplay.textContent = (h < 10 ? '0' + h : '' + h) + ':' + (m < 10 ? '0' + m : '' + m);
-    }
+    this.timeDisplay.textContent = this.formatTime(now);
     this.timeDisplay.style.display = "block";
   } else {
     this.timeDisplay.style.display = "none";
@@ -415,11 +416,12 @@ DialysisClock.prototype.closeConfiguration = function () {
 };
 
 DialysisClock.prototype.loadConfigurationToForm = function () {
-  var self = this;
-  Object.keys(this.dayCheckboxes).forEach(function (day) {
-    var dayNumber = self.getDayNumber(day);
-    self.dayCheckboxes[day].checked = self.config.dialysisDays.includes(dayNumber);
-  });
+  for (var day in this.dayCheckboxes) {
+    if (this.dayCheckboxes.hasOwnProperty(day)) {
+      var dayNumber = this.getDayNumber(day);
+      this.dayCheckboxes[day].checked = this.hasDialysisDay(dayNumber);
+    }
+  }
 
   // Cargar otros valores
   this.ambulanceTime.value = this.config.ambulanceTime;
@@ -462,13 +464,12 @@ DialysisClock.prototype.getDayNumber = function (dayName) {
 };
 
 DialysisClock.prototype.saveConfiguration = function () {
-  var self = this;
   this.config.dialysisDays = [];
-  Object.keys(this.dayCheckboxes).forEach(function (day) {
-    if (self.dayCheckboxes[day].checked) {
-      self.config.dialysisDays.push(self.getDayNumber(day));
+  for (var day in this.dayCheckboxes) {
+    if (this.dayCheckboxes.hasOwnProperty(day) && this.dayCheckboxes[day].checked) {
+      this.config.dialysisDays.push(this.getDayNumber(day));
     }
-  });
+  }
 
   // Recopilar otros valores
   this.config.ambulanceTime = this.ambulanceTime.value;
@@ -526,7 +527,7 @@ DialysisClock.prototype.handleImportFile = function (event) {
   reader.onload = function (e) {
     try {
       var importedConfig = JSON.parse(e.target.result);
-      self.config = Object.assign({}, self.config, importedConfig);
+      self.config = self.mergeConfigs(self.config, importedConfig);
       self.saveConfig();
       self.updateDisplay();
       alert("Configuración importada correctamente.");
@@ -537,8 +538,96 @@ DialysisClock.prototype.handleImportFile = function (event) {
   reader.readAsText(file);
 };
 
+DialysisClock.prototype.hasDialysisDay = function (day) {
+  if (!this.config || !this.config.dialysisDays) {
+    return false;
+  }
+
+  var targetDay = parseInt(day, 10);
+  if (isNaN(targetDay)) {
+    return false;
+  }
+
+  for (var i = 0; i < this.config.dialysisDays.length; i++) {
+    if (parseInt(this.config.dialysisDays[i], 10) === targetDay) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+DialysisClock.prototype.cloneValue = function (value) {
+  if (!value || typeof value !== "object") {
+    return value;
+  }
+
+  if (Object.prototype.toString.call(value) === "[object Array]") {
+    var arr = [];
+    for (var i = 0; i < value.length; i++) {
+      arr[i] = this.cloneValue(value[i]);
+    }
+    return arr;
+  }
+
+  var clone = {};
+  for (var key in value) {
+    if (value.hasOwnProperty(key)) {
+      clone[key] = this.cloneValue(value[key]);
+    }
+  }
+  return clone;
+};
+
+DialysisClock.prototype.mergeConfigs = function (base, overrides) {
+  var result = this.cloneValue(base);
+
+  if (!overrides || typeof overrides !== "object") {
+    return result;
+  }
+
+  for (var key in overrides) {
+    if (!overrides.hasOwnProperty(key)) {
+      continue;
+    }
+
+    var overrideValue = overrides[key];
+    if (
+      overrideValue &&
+      typeof overrideValue === "object" &&
+      Object.prototype.toString.call(overrideValue) !== "[object Array]"
+    ) {
+      result[key] = this.mergeConfigs(result[key] || {}, overrideValue);
+    } else {
+      result[key] = this.cloneValue(overrideValue);
+    }
+  }
+
+  return result;
+};
+
 DialysisClock.prototype.startClock = function () {
-  this.updateDisplay();
+  var self = this;
+
+  if (this.clockTimeout) {
+    clearTimeout(this.clockTimeout);
+    this.clockTimeout = null;
+  }
+
+  var scheduleNext = function () {
+    var now = new Date();
+    var delay = 60000 - (now.getSeconds() * 1000 + now.getMilliseconds());
+    if (delay <= 0 || delay > 60000) {
+      delay = 60000;
+    }
+
+    self.clockTimeout = setTimeout(function () {
+      self.updateDisplay();
+      scheduleNext();
+    }, delay);
+  };
+
+  scheduleNext();
 };
 
 // Inicializar la aplicación cuando el DOM esté listo
