@@ -157,7 +157,9 @@
         try {
           const defaultConfig = {
             dialysisDays: [2, 4, 6],
-            ambulanceTime: "06:30",
+            wakeUpTime: "06:30",
+            ambulanceWindowStart: "07:00",
+            ambulanceWindowEnd: "08:00",
             dialysisEndTime: "08:00",
             nightStart: "22:00",
             nightEnd: "06:00",
@@ -181,7 +183,8 @@
 
           logTest("✅ Configuración cargada correctamente");
           logTest(`📋 Días de diálisis: ${config.dialysisDays.join(", ")}`);
-          logTest(`🚑 Hora ambulancia: ${config.ambulanceTime}`);
+          logTest(`⏰ Hora de despertarse: ${config.wakeUpTime || defaultConfig.wakeUpTime}`);
+          logTest(`🚑 Ventana ambulancia: ${config.ambulanceWindowStart || defaultConfig.ambulanceWindowStart} - ${config.ambulanceWindowEnd || defaultConfig.ambulanceWindowEnd}`);
           logTest(`🌙 Modo noche: ${config.nightStart} - ${config.nightEnd}`);
         } catch (e) {
           logTest("❌ Error cargando configuración: " + e.message, true);

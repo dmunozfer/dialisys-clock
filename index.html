@@ -84,8 +84,16 @@
           <div class="config-section">
             <h3>Horarios de diálisis</h3>
             <label
-              >Hora de ambulancia:
-              <input type="time" id="ambulance-time" value="06:30"
+              >Hora de despertarse (días de diálisis):
+              <input type="time" id="wake-up-time" value="06:30"
+            /></label>
+            <label
+              >Ventana ambulancia (inicio):
+              <input type="time" id="ambulance-window-start" value="07:00"
+            /></label>
+            <label
+              >Ventana ambulancia (fin):
+              <input type="time" id="ambulance-window-end" value="08:00"
             /></label>
             <label
               >Hora de fin de diálisis:
@@ -144,7 +152,7 @@
                 <input
                   type="text"
                   id="submessage-today"
-                  value="La ambulancia viene a las {hora}."
+                  value="Desayuna y prepárate. {mensajeAmbulancia}"
                   maxlength="100"
               /></label>
               <label
@@ -176,7 +184,7 @@
                 <input
                   type="text"
                   id="submessage-tomorrow"
-                  value="Prepárate esta noche."
+                  value="Prepárate esta noche. La ambulancia llegará entre {ventanaInicio} y {ventanaFin}."
                   maxlength="100"
               /></label>
               <label
@@ -215,7 +223,11 @@
             <div class="message-help">
               <small>
                 <strong>Variables disponibles:</strong><br />
-                • {hora} - Se reemplaza con la hora de ambulancia<br />
+                • {horaDespertar} - Hora de levantarse en días de diálisis<br />
+                • {ventanaInicio} - Inicio de la ventana de llegada<br />
+                • {ventanaFin} - Fin de la ventana de llegada<br />
+                • {mensajeAmbulancia} - Texto dinámico según la fase del día<br />
+                • {hora} - Alias compatible del inicio de ventana<br />
                 • {horaFin} - Se reemplaza con la hora de fin de diálisis
               </small>
             </div>

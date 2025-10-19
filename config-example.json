@@ -1,6 +1,9 @@
 {
-  "dialysisDays": [2, 4, 6],
-  "ambulanceTime": "06:30",
+  "dialysisDays": [
+    2,
+    4,
+    6
+  ],
   "dialysisEndTime": "12:00",
   "nightStart": "21:30",
   "nightEnd": "06:00",
@@ -13,15 +16,18 @@
   },
   "messages": {
     "today": "HOY HAY DIÁLISIS",
-    "todaySub": "La ambulancia viene a las {hora}.",
+    "todaySub": "Desayuna y prepárate. {mensajeAmbulancia}",
     "completed": "YA HAS IDO A DIÁLISIS",
     "completedSub": "Descansa tranquilo, ya ha pasado.",
     "tomorrow": "MAÑANA HAY DIÁLISIS",
-    "tomorrowSub": "Descansa tranquilo, mañana te recogerá la ambulancia.",
+    "tomorrowSub": "Descansa tranquilo, mañana te recogerá la ambulancia entre {ventanaInicio} y {ventanaFin}.",
     "rest": "HOY DESCANSO",
     "restSub": "No hay diálisis hoy ni mañana. Descansa tranquilo.",
     "nightTomorrow": "Mañana hay diálisis. Duerme tranquilo, aún falta mucho.",
     "nightRest": "No hay diálisis mañana. Duerme tranquilo."
   },
-  "showTime": true
+  "showTime": true,
+  "wakeUpTime": "06:30",
+  "ambulanceWindowStart": "07:00",
+  "ambulanceWindowEnd": "08:00"
 }

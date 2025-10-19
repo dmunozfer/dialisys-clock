@@ -35,7 +35,13 @@ DialysisClock.prototype.initializeElements = function () {
     sunday: document.getElementById("day-sunday"),
   };
 
-  this.ambulanceTime = document.getElementById("ambulance-time");
+  this.wakeUpTimeInput = document.getElementById("wake-up-time");
+  this.ambulanceWindowStartInput = document.getElementById(
+    "ambulance-window-start"
+  );
+  this.ambulanceWindowEndInput = document.getElementById(
+    "ambulance-window-end"
+  );
   this.dialysisEndTime = document.getElementById("dialysis-end-time");
   this.nightStart = document.getElementById("night-start");
   this.nightEnd = document.getElementById("night-end");
@@ -139,7 +145,9 @@ DialysisClock.prototype.cancelConfigTrigger = function () {
 DialysisClock.prototype.loadConfig = function () {
   var defaultConfig = {
     dialysisDays: [2, 4, 6], // Martes, Jueves, Sábado
-    ambulanceTime: "06:30",
+    wakeUpTime: "06:30",
+    ambulanceWindowStart: "07:00",
+    ambulanceWindowEnd: "08:00",
     dialysisEndTime: "12:00",
     nightStart: "21:30",
     nightEnd: "06:00",
@@ -152,11 +160,11 @@ DialysisClock.prototype.loadConfig = function () {
     },
     messages: {
       today: "HOY HAY DIÁLISIS",
-      todaySub: "La ambulancia viene a las {hora}.",
+      todaySub: "Desayuna y prepárate. {mensajeAmbulancia}",
       completed: "YA HAS IDO A DIÁLISIS",
       completedSub: "Descansa tranquilo, ya ha pasado.",
       tomorrow: "MAÑANA HAY DIÁLISIS",
-      tomorrowSub: "Descansa tranquilo, mañana te recogerá la ambulancia.",
+      tomorrowSub: "Descansa tranquilo, mañana te recogerá la ambulancia entre {ventanaInicio} y {ventanaFin}.",
       rest: "HOY DESCANSO",
       restSub: "No hay diálisis hoy ni mañana. Descansa tranquilo.",
       nightTomorrow: "Mañana hay diálisis. Duerme tranquilo, aún falta mucho.",
@@ -170,13 +178,14 @@ DialysisClock.prototype.loadConfig = function () {
     var saved = localStorage.getItem("dialysisClockConfig");
     if (saved) {
       var parsed = JSON.parse(saved);
-      return this.mergeConfigs(defaultConfig, parsed);
+      var merged = this.mergeConfigs(defaultConfig, parsed);
+      return this.normalizeConfig(merged);
     }
   } catch (e) {
     console.warn("Error cargando configuración:", e);
   }
 
-  return this.cloneValue(defaultConfig);
+  return this.normalizeConfig(this.cloneValue(defaultConfig));
 };
 
 DialysisClock.prototype.saveConfig = function () {
@@ -196,21 +205,25 @@ DialysisClock.prototype.getCurrentState = function () {
   var nightStart = this.parseTime(this.config.nightStart);
   var nightEnd = this.parseTime(this.config.nightEnd);
   var hasDialysisToday = this.hasDialysisDay(currentDay);
-  var ambulanceTime = NaN;
+  var wakeUpTime = NaN;
+  var ambulanceWindowStart = NaN;
+  var ambulanceWindowEnd = NaN;
   var dialysisEndTime = NaN;
 
   if (hasDialysisToday) {
-    ambulanceTime = this.parseTime(this.config.ambulanceTime);
+    wakeUpTime = this.parseTime(this.config.wakeUpTime);
+    ambulanceWindowStart = this.parseTime(this.config.ambulanceWindowStart);
+    ambulanceWindowEnd = this.parseTime(this.config.ambulanceWindowEnd);
     dialysisEndTime = this.parseTime(this.config.dialysisEndTime);
   }
 
   this.isNightMode = this.isInNightMode(currentTime, nightStart, nightEnd);
-  var ambulanceHasPriority =
+  var wakeUpHasPriority =
     hasDialysisToday &&
-    !isNaN(ambulanceTime) &&
-    currentTime >= ambulanceTime;
+    !isNaN(wakeUpTime) &&
+    currentTime >= wakeUpTime;
 
-  if (this.isNightMode && !ambulanceHasPriority) {
+  if (this.isNightMode && !wakeUpHasPriority) {
     var tomorrowN = new Date(now);
     tomorrowN.setDate(tomorrowN.getDate() + 1);
     var tomorrowDayN = tomorrowN.getDay();
@@ -232,11 +245,13 @@ DialysisClock.prototype.getCurrentState = function () {
 
   // Verificar si hoy es día de diálisis
   if (hasDialysisToday) {
-    var timeUntilAmbulance = ambulanceTime - currentTime;
-    var timeAfterDialysis = currentTime - dialysisEndTime;
+    var timeAfterDialysis = NaN;
+    if (!isNaN(dialysisEndTime)) {
+      timeAfterDialysis = currentTime - dialysisEndTime;
+    }
 
     // Si ya pasó la hora de fin de diálisis, mostrar estado completada
-    if (timeAfterDialysis >= 0) {
+    if (!isNaN(timeAfterDialysis) && timeAfterDialysis >= 0) {
       return {
         type: "completed",
         message: this.config.messages.completed,
@@ -245,34 +260,44 @@ DialysisClock.prototype.getCurrentState = function () {
       };
     }
 
-    // Si aún no es hora de ambulancia, mostrar preparación
-    if (timeUntilAmbulance > 0) {
-      var subMessage = this.processMessage(this.config.messages.todaySub, {
-        hora: this.config.ambulanceTime,
-      });
+    var contextoAmbulancia = this.buildAmbulanceContextMessage(
+      currentTime,
+      wakeUpTime,
+      ambulanceWindowStart,
+      ambulanceWindowEnd
+    );
 
-      if (timeUntilAmbulance <= 15) {
-        subMessage =
-          "La ambulancia viene pronto! (" + this.config.ambulanceTime + ")";
-      }
+    if (
+      contextoAmbulancia.despuesVentana &&
+      (!isNaN(dialysisEndTime) ? currentTime < dialysisEndTime : true)
+    ) {
+      var subMessageDialysis = this.processMessage(
+        "En diálisis hasta las {horaFin}.",
+        {
+          horaFin: this.config.dialysisEndTime,
+        }
+      );
 
       return {
         type: "today",
         message: this.config.messages.today,
-        subMessage: subMessage,
+        subMessage: subMessageDialysis,
         color: this.config.colors.today,
       };
     }
 
-    // Si es hora de ambulancia o durante la diálisis
-    var subMessage2 = this.processMessage("En diálisis hasta las {horaFin}.", {
-      horaFin: this.config.dialysisEndTime,
+    var subMessage = this.processMessage(this.config.messages.todaySub, {
+      hora: this.config.ambulanceWindowStart,
+      horaDespertar: this.config.wakeUpTime,
+      ventanaInicio: this.config.ambulanceWindowStart,
+      ventanaFin: this.config.ambulanceWindowEnd,
+      mensajeAmbulancia: contextoAmbulancia.mensaje,
     });
 
     return {
       type: "today",
       message: this.config.messages.today,
-      subMessage: subMessage2,
+      subMessage: subMessage,
       color: this.config.colors.today,
     };
   }
@@ -283,10 +308,20 @@ DialysisClock.prototype.getCurrentState = function () {
   var tomorrowDay = tomorrow.getDay();
 
   if (this.hasDialysisDay(tomorrowDay)) {
+    var tomorrowSub = this.processMessage(
+      this.config.messages.tomorrowSub,
+      {
+        hora: this.config.ambulanceWindowStart,
+        horaDespertar: this.config.wakeUpTime,
+        ventanaInicio: this.config.ambulanceWindowStart,
+        ventanaFin: this.config.ambulanceWindowEnd,
+      }
+    );
+
     return {
       type: "tomorrow",
       message: this.config.messages.tomorrow,
-      subMessage: this.config.messages.tomorrowSub,
+      subMessage: tomorrowSub,
       color: this.config.colors.tomorrow,
     };
   }
@@ -322,21 +357,118 @@ DialysisClock.prototype.parseTime = function (timeString) {
 };
 
 DialysisClock.prototype.processMessage = function (message, variables) {
-  var processedMessage = message;
+  var processedMessage = message || "";
   variables = variables || {};
 
   // Reemplazar variables
   for (var key in variables) {
     if (variables.hasOwnProperty(key)) {
       var placeholder = "{" + key + "}";
+      var value = variables[key];
+      if (value === undefined || value === null) {
+        value = "";
+      }
       processedMessage = processedMessage.replace(
         new RegExp(placeholder, "g"),
-        variables[key]
+        value
       );
     }
   }
 
   return processedMessage;
+};
+
+DialysisClock.prototype.buildAmbulanceContextMessage = function (
+  currentTime,
+  wakeUpTime,
+  windowStart,
+  windowEnd
+) {
+  var wakeFormatted = this.config.wakeUpTime;
+  var startFormatted = this.config.ambulanceWindowStart;
+  var endFormatted = this.config.ambulanceWindowEnd;
+
+  wakeFormatted = wakeFormatted || "--:--";
+  startFormatted = startFormatted || "--:--";
+  endFormatted = endFormatted || "--:--";
+
+  var ventanaCruzaMedianoche =
+    !isNaN(windowStart) && !isNaN(windowEnd) && windowStart > windowEnd;
+
+  var enVentana = false;
+  if (!isNaN(windowStart)) {
+    if (!isNaN(windowEnd)) {
+      if (ventanaCruzaMedianoche) {
+        enVentana =
+          currentTime >= windowStart || currentTime < windowEnd;
+      } else {
+        enVentana =
+          currentTime >= windowStart && currentTime < windowEnd;
+      }
+    } else {
+      enVentana = currentTime >= windowStart;
+    }
+  }
+
+  var despuesVentana = false;
+  if (!isNaN(windowStart) && !isNaN(windowEnd)) {
+    if (ventanaCruzaMedianoche) {
+      despuesVentana =
+        !enVentana &&
+        currentTime >= windowEnd &&
+        currentTime < windowStart;
+    } else {
+      despuesVentana = !enVentana && currentTime >= windowEnd;
+    }
+  }
+
+  var resultado = {
+    mensaje: "",
+    enVentana: enVentana,
+    despuesVentana: despuesVentana,
+  };
+
+  if (!isNaN(wakeUpTime) && currentTime < wakeUpTime) {
+    resultado.mensaje =
+      "Despierta a las " +
+      wakeFormatted +
+      " para desayunar. La ambulancia llega entre " +
+      startFormatted +
+      " y " +
+      endFormatted +
+      ".";
+    return resultado;
+  }
+
+  if (enVentana) {
+    resultado.mensaje =
+      "La ambulancia puede llegar en cualquier momento (entre " +
+      startFormatted +
+      " y " +
+      endFormatted +
+      ").";
+    return resultado;
+  }
+
+  if (resultado.despuesVentana) {
+    resultado.mensaje =
+      "La ventana de llegada ha terminado. Continúa con el traslado hacia diálisis.";
+    return resultado;
+  }
+
+  if (!isNaN(windowStart)) {
+    resultado.mensaje =
+      "Ya es hora de levantarse. La ambulancia llega entre " +
+      startFormatted +
+      " y " +
+      endFormatted +
+      ".";
+    return resultado;
+  }
+
+  resultado.mensaje = "Prepara todo con calma para la ambulancia.";
+
+  return resultado;
 };
 
 DialysisClock.prototype.formatDay = function (date) {
@@ -441,7 +573,9 @@ DialysisClock.prototype.loadConfigurationToForm = function () {
   }
 
   // Cargar otros valores
-  this.ambulanceTime.value = this.config.ambulanceTime;
+  this.wakeUpTimeInput.value = this.config.wakeUpTime;
+  this.ambulanceWindowStartInput.value = this.config.ambulanceWindowStart;
+  this.ambulanceWindowEndInput.value = this.config.ambulanceWindowEnd;
   this.dialysisEndTime.value = this.config.dialysisEndTime;
   this.nightStart.value = this.config.nightStart;
   this.nightEnd.value = this.config.nightEnd;
@@ -491,7 +625,16 @@ DialysisClock.prototype.saveConfiguration = function () {
   }
 
   // Recopilar otros valores
-  this.config.ambulanceTime = this.ambulanceTime.value;
+  this.config.wakeUpTime =
+    this.wakeUpTimeInput.value || this.config.wakeUpTime || "06:30";
+  this.config.ambulanceWindowStart =
+    this.ambulanceWindowStartInput.value ||
+    this.config.ambulanceWindowStart ||
+    this.config.wakeUpTime;
+  this.config.ambulanceWindowEnd =
+    this.ambulanceWindowEndInput.value ||
+    this.config.ambulanceWindowEnd ||
+    this.config.ambulanceWindowStart;
   this.config.dialysisEndTime = this.dialysisEndTime.value;
   this.config.nightStart = this.nightStart.value;
   this.config.nightEnd = this.nightEnd.value;
@@ -507,7 +650,8 @@ DialysisClock.prototype.saveConfiguration = function () {
   this.config.messages.today =
     this.messageToday.value.trim() || "HOY HAY DIÁLISIS";
   this.config.messages.todaySub =
-    this.submessageToday.value.trim() || "La ambulancia viene a las {hora}.";
+    this.submessageToday.value.trim() ||
+    "Desayuna y prep�rate. {mensajeAmbulancia}";
   this.config.messages.completed =
     this.messageCompleted.value.trim() || "YA FUE A DIÁLISIS";
   this.config.messages.completedSub =
@@ -515,7 +659,7 @@ DialysisClock.prototype.saveConfiguration = function () {
   this.config.messages.tomorrow =
     this.messageTomorrow.value.trim() || "MAÑANA HAY DIÁLISIS";
   this.config.messages.tomorrowSub =
-    this.submessageTomorrow.value.trim() || "Prepárate esta noche.";
+    this.submessageTomorrow.value.trim() || "Prep�rate esta noche. La ambulancia llegar� entre {ventanaInicio} y {ventanaFin}.";
   this.config.messages.rest = this.messageRest.value.trim() || "HOY DESCANSO";
   this.config.messages.restSub =
     this.submessageRest.value.trim() || "No hay diálisis hoy.";
@@ -556,7 +700,9 @@ DialysisClock.prototype.handleImportFile = function (event) {
   reader.onload = function (e) {
     try {
       var importedConfig = JSON.parse(e.target.result);
-      self.config = self.mergeConfigs(self.config, importedConfig);
+      self.config = self.normalizeConfig(
+        self.mergeConfigs(self.config, importedConfig)
+      );
       self.saveConfig();
       self.updateDisplay();
       alert("Configuración importada correctamente.");
@@ -637,6 +783,31 @@ DialysisClock.prototype.mergeConfigs = function (base, overrides) {
   return result;
 };
 
+DialysisClock.prototype.normalizeConfig = function (config) {
+  if (!config || typeof config !== "object") {
+    config = {};
+  }
+
+  if (!config.wakeUpTime) {
+    config.wakeUpTime = config.ambulanceTime || "06:30";
+  }
+
+  if (!config.ambulanceWindowStart) {
+    config.ambulanceWindowStart = config.ambulanceTime || config.wakeUpTime;
+  }
+
+  if (!config.ambulanceWindowEnd) {
+    config.ambulanceWindowEnd =
+      config.ambulanceWindowStart || config.ambulanceTime || "08:00";
+  }
+
+  if (config.ambulanceTime) {
+    delete config.ambulanceTime;
+  }
+
+  return config;
+};
+
 DialysisClock.prototype.startClock = function () {
   var self = this;
 
@@ -685,3 +856,5 @@ document.addEventListener(
   },
   false
 );
+
+

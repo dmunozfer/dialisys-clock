@@ -19,7 +19,7 @@ Dialysis Clock es una aplicación web diseñada para reducir la ansiedad y desor
 
 1. **Acceder al modo configuración**: Mantener pulsado 5 segundos en la esquina inferior derecha de la pantalla
 2. **Configurar días de diálisis**: Marcar los días de la semana (por defecto: Martes, Jueves, Sábado)
-3. **Establecer hora de ambulancia**: Configurar la hora habitual de recogida
+3. **Configurar horarios de traslado**: Definir hora de despertarse y ventana aproximada de llegada de la ambulancia
 4. **Ajustar horario nocturno**: Definir cuándo activar el modo noche (por defecto: 22:00 - 06:00)
 5. **Personalizar colores**: Ajustar los colores para cada estado según preferencias
 6. **Guardar configuración**: Tocar "Guardar" para aplicar los cambios
@@ -29,13 +29,13 @@ Dialysis Clock es una aplicación web diseñada para reducir la ansiedad y desor
 ### 🟢 Hoy hay diálisis
 
 - **Mensaje**: "HOY HAY DIÁLISIS"
-- **Submensaje**: "La ambulancia viene a las [hora]"
+- **Submensaje**: Recordatorios dinámicos (hora de despertarse y ventana de llegada, ej: 07:00-08:00)
 - **Color**: Verde claro
 
 ### 🟡 Mañana hay diálisis
 
 - **Mensaje**: "MAÑANA HAY DIÁLISIS"
-- **Submensaje**: "Prepárate esta noche"
+- **Submensaje**: Indica la franja estimada de llegada del día siguiente
 - **Color**: Amarillo/naranja cálido
 
 ### 🔵 Hoy descanso
@@ -57,10 +57,15 @@ Dialysis Clock es una aplicación web diseñada para reducir la ansiedad y desor
 - Seleccionar los días de la semana en que hay tratamiento
 - Por defecto: Martes, Jueves, Sábado
 
-### Hora de Ambulancia
+### Hora de despertarse (días de diálisis)
 
-- Establecer la hora habitual de recogida
-- Formato 24 horas (ej: 06:30)
+- Define la hora a la que debe levantarse para desayunar y vestirse los días con tratamiento.
+- Formato 24 horas (ej: 06:30).
+
+### Ventana de ambulancia
+
+- Establece la franja aproximada de llegada de la ambulancia (inicio y fin).
+- Formato 24 horas (ej: 07:00 - 08:00).
 
 ### Horario Modo Noche
 
@@ -78,6 +83,7 @@ Dialysis Clock es una aplicación web diseñada para reducir la ansiedad y desor
 ### Opciones Adicionales
 
 - **Mostrar hora**: Activar/desactivar visualización de la hora actual
+- **Variables en mensajes**: Puedes usar {horaDespertar}, {ventanaInicio}, {ventanaFin}, {mensajeAmbulancia}, {horaFin} y {hora} (compatibilidad).
 
 ## 🔧 Funciones Avanzadas
 
