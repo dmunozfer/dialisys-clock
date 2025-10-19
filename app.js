@@ -199,10 +199,22 @@ DialysisClock.prototype.getCurrentState = function () {
   // Verificar si estamos en modo noche
   var nightStart = this.parseTime(this.config.nightStart);
   var nightEnd = this.parseTime(this.config.nightEnd);
+  var hasDialysisToday = this.hasDialysisDay(currentDay);
+  var ambulanceTime = NaN;
+  var dialysisEndTime = NaN;
+
+  if (hasDialysisToday) {
+    ambulanceTime = this.parseTime(this.config.ambulanceTime);
+    dialysisEndTime = this.parseTime(this.config.dialysisEndTime);
+  }
 
   this.isNightMode = this.isInNightMode(currentTime, nightStart, nightEnd);
+  var ambulanceHasPriority =
+    hasDialysisToday &&
+    !isNaN(ambulanceTime) &&
+    currentTime >= ambulanceTime;
 
-  if (this.isNightMode) {
+  if (this.isNightMode && !ambulanceHasPriority) {
     var tomorrowN = new Date(now);
     tomorrowN.setDate(tomorrowN.getDate() + 1);
     var tomorrowDayN = tomorrowN.getDay();
@@ -223,9 +235,7 @@ DialysisClock.prototype.getCurrentState = function () {
   }
 
   // Verificar si hoy es día de diálisis
-  if (this.hasDialysisDay(currentDay)) {
-    var ambulanceTime = this.parseTime(this.config.ambulanceTime);
-    var dialysisEndTime = this.parseTime(this.config.dialysisEndTime);
+  if (hasDialysisToday) {
     var timeUntilAmbulance = ambulanceTime - currentTime;
     var timeAfterDialysis = currentTime - dialysisEndTime;
 
