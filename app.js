@@ -46,7 +46,6 @@ DialysisClock.prototype.initializeElements = function () {
   this.colorNight = document.getElementById("color-night");
   this.showDay = document.getElementById("show-day");
   this.showTime = document.getElementById("show-time");
-  this.enableAudio = document.getElementById("enable-audio");
 
   // Elementos de mensajes configurables
   this.messageToday = document.getElementById("message-today");
@@ -165,7 +164,6 @@ DialysisClock.prototype.loadConfig = function () {
     },
     showDay: true,
     showTime: true,
-    enableAudio: false,
   };
 
   try {
@@ -422,34 +420,6 @@ DialysisClock.prototype.updateDisplay = function () {
     }
   }
 
-  // Reproducir audio si está habilitado
-  if (
-    this.config.enableAudio &&
-    state.type !== "night-tomorrow" &&
-    state.type !== "night-rest"
-  ) {
-    this.playAudio(state.type);
-  }
-};
-
-DialysisClock.prototype.playAudio = function (type) {
-  var audioFiles = {
-    today: "audio/today-dialysis.mp3",
-    completed: "audio/dialysis-completed.mp3",
-    tomorrow: "audio/tomorrow-dialysis.mp3",
-    rest: "audio/rest-day.mp3",
-  };
-
-  if (audioFiles[type]) {
-    var audio = new Audio(audioFiles[type]);
-    audio.volume = 0.7;
-    var p = audio.play();
-    if (p && typeof p.catch === "function") {
-      p.catch(function (e) {
-        console.warn("No se pudo reproducir audio:", e);
-      });
-    }
-  }
 };
 
 DialysisClock.prototype.openConfiguration = function () {
@@ -482,7 +452,6 @@ DialysisClock.prototype.loadConfigurationToForm = function () {
   this.colorNight.value = this.config.colors.night;
   this.showDay.checked = this.config.showDay;
   this.showTime.checked = this.config.showTime;
-  this.enableAudio.checked = this.config.enableAudio;
 
   // Cargar mensajes configurables
   this.messageToday.value = this.config.messages.today;
@@ -533,7 +502,6 @@ DialysisClock.prototype.saveConfiguration = function () {
   this.config.colors.night = this.colorNight.value;
   this.config.showDay = this.showDay.checked;
   this.config.showTime = this.showTime.checked;
-  this.config.enableAudio = this.enableAudio.checked;
 
   // Guardar mensajes configurables
   this.config.messages.today =
