@@ -68,22 +68,16 @@ Duración: hasta el inicio del modo noche (22:00).
    Hora Comportamiento
    06:00–22:00 Muestra el estado diurno correspondiente (“Hoy” / “Mañana” / “Descanso”).
    22:00–06:00 Activa modo noche: fondo oscuro, texto relajante, sin reloj visible (opcional).
-   Hora configurable de ambulancia Si hoy hay diálisis, el color puede animarse suavemente 15 minutos antes de la hora (transición de azul a verde). 6. 💬 Mensajes y animaciones
+   Hora configurable de ambulancia: muestra un recordatorio textual 15 minutos antes de la hora de recogida.
+
+6. ?? Mensajes
    6.1. Mensajes visuales
 
-Texto principal muy grande (mínimo 20% de la pantalla).
+Texto principal muy grande (minimo 20% de la pantalla).
 
 Subtexto con recordatorio o mensaje tranquilizador.
 
-Opción de mostrar la hora actual (pequeña, esquina inferior).
-
-6.2. Animaciones
-
-Transiciones suaves de color (sin parpadeo).
-
-En días de diálisis: transición lenta hacia tonos más luminosos al acercarse la hora configurada (por ejemplo, 06:00).
-
-En modo noche: brillo reducido y fondo fijo.
+Opcion de mostrar la hora actual (pequena, esquina inferior).
 
 7. 🔈 Mensajes de voz (opcional / fase 2)
    7.1. Reproducción de audio local
@@ -117,7 +111,6 @@ Horario de modo noche.
 
 Colores de cada estado.
 
-Activar/desactivar animaciones.
 
 Activar/desactivar voz.
 

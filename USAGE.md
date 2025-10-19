@@ -31,7 +31,6 @@ Dialysis Clock es una aplicación web diseñada para reducir la ansiedad y desor
 - **Mensaje**: "HOY HAY DIÁLISIS"
 - **Submensaje**: "La ambulancia viene a las [hora]"
 - **Color**: Verde claro
-- **Animación**: Parpadeo suave 15 minutos antes de la hora de ambulancia
 
 ### 🟡 Mañana hay diálisis
 
@@ -79,7 +78,6 @@ Dialysis Clock es una aplicación web diseñada para reducir la ansiedad y desor
 ### Opciones Adicionales
 
 - **Mostrar hora**: Activar/desactivar visualización de la hora actual
-- **Animaciones**: Activar/desactivar transiciones suaves
 - **Audio**: Activar/desactivar mensajes de voz (requiere archivos de audio)
 
 ## 🔧 Funciones Avanzadas
@@ -154,7 +152,6 @@ Dialysis Clock es una aplicación web diseñada para reducir la ansiedad y desor
 
 ### Los colores no se aplican
 
-- Verificar que las animaciones estén habilitadas
 - Comprobar que el navegador soporte CSS moderno
 - Reiniciar la aplicación
 

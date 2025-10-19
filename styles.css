@@ -415,21 +415,6 @@ body {
   background: linear-gradient(135deg, #673ab7, #9575cd);
 }
 
-/* Animaciones */
-@keyframes gentle-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-
-.animating {
-  animation: gentle-pulse 3s ease-in-out infinite;
-}
-
 /* Modo kiosko - ocultar elementos del navegador */
 @media screen and (display-mode: fullscreen) {
   body {

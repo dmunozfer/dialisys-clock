@@ -24,6 +24,5 @@
     "nightRest": "No hay diálisis mañana. Duerme tranquilo."
   },
   "showTime": true,
-  "enableAnimations": true,
   "enableAudio": false
 }

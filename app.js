@@ -46,7 +46,6 @@ DialysisClock.prototype.initializeElements = function () {
   this.colorNight = document.getElementById("color-night");
   this.showDay = document.getElementById("show-day");
   this.showTime = document.getElementById("show-time");
-  this.enableAnimations = document.getElementById("enable-animations");
   this.enableAudio = document.getElementById("enable-audio");
 
   // Elementos de mensajes configurables
@@ -166,7 +165,6 @@ DialysisClock.prototype.loadConfig = function () {
     },
     showDay: true,
     showTime: true,
-    enableAnimations: true,
     enableAudio: false,
   };
 
@@ -257,7 +255,7 @@ DialysisClock.prototype.getCurrentState = function () {
 
       if (timeUntilAmbulance <= 15) {
         subMessage =
-          "¡La ambulancia viene pronto! (" + this.config.ambulanceTime + ")";
+          "La ambulancia viene pronto! (" + this.config.ambulanceTime + ")";
       }
 
       return {
@@ -265,7 +263,6 @@ DialysisClock.prototype.getCurrentState = function () {
         message: this.config.messages.today,
         subMessage: subMessage,
         color: this.config.colors.today,
-        animate: timeUntilAmbulance <= 15,
       };
     }
 
@@ -279,7 +276,6 @@ DialysisClock.prototype.getCurrentState = function () {
       message: this.config.messages.today,
       subMessage: subMessage2,
       color: this.config.colors.today,
-      animate: false,
     };
   }
 
@@ -404,12 +400,6 @@ DialysisClock.prototype.updateDisplay = function () {
   this.mainScreen.style.backgroundColor = state.color;
 
   // Aplicar animación si es necesario
-  if (state.animate && this.config.enableAnimations) {
-    this.mainScreen.classList.add("animating");
-  } else {
-    this.mainScreen.classList.remove("animating");
-  }
-
   var now = null;
 
   if (this.dayDisplay) {
@@ -492,7 +482,6 @@ DialysisClock.prototype.loadConfigurationToForm = function () {
   this.colorNight.value = this.config.colors.night;
   this.showDay.checked = this.config.showDay;
   this.showTime.checked = this.config.showTime;
-  this.enableAnimations.checked = this.config.enableAnimations;
   this.enableAudio.checked = this.config.enableAudio;
 
   // Cargar mensajes configurables
@@ -544,7 +533,6 @@ DialysisClock.prototype.saveConfiguration = function () {
   this.config.colors.night = this.colorNight.value;
   this.config.showDay = this.showDay.checked;
   this.config.showTime = this.showTime.checked;
-  this.config.enableAnimations = this.enableAnimations.checked;
   this.config.enableAudio = this.enableAudio.checked;
 
   // Guardar mensajes configurables
